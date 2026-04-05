@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="224" fill="#1C1C1E"/>
+
+  <!-- Speech bubble (solid fill) -->
+  <path d="
+    M 236 320
+    Q 236 250, 310 250
+    L 714 250
+    Q 788 250, 788 320
+    L 788 600
+    Q 788 670, 714 670
+    L 490 670
+    L 370 810
+    L 395 670
+    L 310 670
+    Q 236 670, 236 600
+    Z
+  " fill="#E5E5EA"/>
+
+  <!-- Three dots (dark on light bubble) -->
+  <circle cx="400" cy="460" r="36" fill="#1C1C1E"/>
+  <circle cx="512" cy="460" r="36" fill="#1C1C1E"/>
+  <circle cx="624" cy="460" r="36" fill="#1C1C1E"/>
+</svg>
