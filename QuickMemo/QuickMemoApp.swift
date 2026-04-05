@@ -4,6 +4,7 @@ import SwiftUI
 struct QuickMemoApp: App {
     init() {
         WatchSessionManager.shared.activate()
+        LocationManager.shared.startFetching()
     }
 
     var body: some Scene {

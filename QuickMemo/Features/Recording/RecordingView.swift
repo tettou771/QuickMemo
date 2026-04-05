@@ -88,6 +88,8 @@ struct RecordingView: View {
         .navigationTitle("QuickMemo")
         .navigationBarTitleDisplayMode(.inline)
         .task {
+            // Start location fetch early
+            LocationManager.shared.startFetching()
             // Auto-start voice recording on launch
             let granted = await recognizer.requestPermissions()
             if granted {
@@ -127,8 +129,11 @@ struct RecordingView: View {
         saving = true
         defer { saving = false }
 
+        // Wait for location (started when view appeared, up to 10s)
+        let location = await LocationManager.shared.getLocation()
+
         do {
-            try await WebDAVService.shared.saveMemo(text: text, category: category)
+            try await WebDAVService.shared.saveMemo(text: text, category: category, location: location)
             UINotificationFeedbackGenerator().notificationOccurred(.success)
             saved = true
             saveError = nil

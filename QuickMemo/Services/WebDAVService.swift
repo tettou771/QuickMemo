@@ -1,4 +1,5 @@
 import Foundation
+import CoreLocation
 
 private extension DateFormatter {
     static let yearFormatter: DateFormatter = {
@@ -9,6 +10,11 @@ private extension DateFormatter {
     static let monthFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "MM"
+        return f
+    }()
+    static let dayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "dd"
         return f
     }()
 }
@@ -23,22 +29,15 @@ struct WebDAVConfig {
         !serverURL.isEmpty && !username.isEmpty && !password.isEmpty
     }
 
-    // WebDAV endpoint: /remote.php/dav/files/<username>/<path>/<YYYY>/<MM>/<filename>
+    // WebDAV endpoint: /remote.php/dav/files/<username>/<path>/<YYYY>/<MM>/<DD>/<filename>
     func uploadURL(filename: String, date: Date = Date()) -> URL? {
         let base = serverURL.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         let path = savePath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         let year = DateFormatter.yearFormatter.string(from: date)
         let month = DateFormatter.monthFormatter.string(from: date)
-        let urlString = "\(base)/remote.php/dav/files/\(username)/\(path)/\(year)/\(month)/\(filename)"
+        let day = DateFormatter.dayFormatter.string(from: date)
+        let urlString = "\(base)/remote.php/dav/files/\(username)/\(path)/\(year)/\(month)/\(day)/\(filename)"
         return URL(string: urlString)
-    }
-
-    // Date folder path: <savePath>/<YYYY>/<MM>
-    func dateFolderPath(date: Date = Date()) -> String {
-        let path = savePath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-        let year = DateFormatter.yearFormatter.string(from: date)
-        let month = DateFormatter.monthFormatter.string(from: date)
-        return "\(path)/\(year)/\(month)"
     }
 }
 
@@ -84,7 +83,7 @@ class WebDAVService {
 
     // MARK: - Upload
 
-    func saveMemo(text: String, category: MemoCategory) async throws {
+    func saveMemo(text: String, category: MemoCategory, location: CLLocation? = nil) async throws {
         let cfg = config
         guard cfg.isConfigured else { throw WebDAVError.notConfigured }
 
@@ -101,7 +100,7 @@ class WebDAVService {
             throw WebDAVError.invalidURL
         }
 
-        let content = MemoBuilder.build(text: text, category: category, source: .iphone)
+        let content = MemoBuilder.build(text: text, category: category, source: .iphone, location: location)
         let data = content.data(using: .utf8)!
 
         var request = URLRequest(url: url)
@@ -131,9 +130,10 @@ class WebDAVService {
         let savePath = cfg.savePath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         let year = DateFormatter.yearFormatter.string(from: date)
         let month = DateFormatter.monthFormatter.string(from: date)
+        let day = DateFormatter.dayFormatter.string(from: date)
 
-        // Create each level: /QuickMemo, /QuickMemo/2026, /QuickMemo/2026/04
-        let paths = [savePath, "\(savePath)/\(year)", "\(savePath)/\(year)/\(month)"]
+        // Create each level: /QuickMemo, /QuickMemo/2026, /QuickMemo/2026/04, /QuickMemo/2026/04/06
+        let paths = [savePath, "\(savePath)/\(year)", "\(savePath)/\(year)/\(month)", "\(savePath)/\(year)/\(month)/\(day)"]
         for path in paths {
             let urlString = "\(base)/remote.php/dav/files/\(cfg.username)/\(path)"
             guard let url = URL(string: urlString) else { continue }

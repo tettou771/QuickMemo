@@ -33,6 +33,7 @@ class WatchSessionManager: NSObject, WCSessionDelegate {
 
         Task {
             do {
+                // No location for Watch-initiated saves (avoid blocking)
                 try await WebDAVService.shared.saveMemo(text: text, category: category)
                 replyHandler(["success": true])
             } catch {

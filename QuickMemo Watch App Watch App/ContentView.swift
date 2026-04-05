@@ -6,7 +6,6 @@ struct ContentView: View {
     @State private var saved = false
     @State private var sending = false
     @State private var errorMessage: String?
-
     var body: some View {
         ScrollView {
             VStack(spacing: 12) {
