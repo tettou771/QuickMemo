@@ -7,10 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C9AA4B72F82C0F10083DDC7 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C9AA4B62F82C0F10083DDC7 /* WidgetKit.framework */; };
+		9C9AA4B92F82C0F10083DDC7 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C9AA4B82F82C0F10083DDC7 /* SwiftUI.framework */; };
+		9C9AA4C82F82C0F20083DDC7 /* QuickMemoWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9C9AA4B42F82C0F10083DDC7 /* QuickMemoWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9CEB68AC2F82B4F600D3AA36 /* QuickMemo Watch App Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 9CEB68A22F82B4F500D3AA36 /* QuickMemo Watch App Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		9C9AA4C62F82C0F20083DDC7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9CEB68202F82A0E400D3AA36 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9C9AA4B32F82C0F10083DDC7;
+			remoteInfo = QuickMemoWidgetExtension;
+		};
 		9CEB68AA2F82B4F600D3AA36 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9CEB68202F82A0E400D3AA36 /* Project object */;
@@ -21,6 +31,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		9C9AA4CD2F82C0F20083DDC7 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9C9AA4C82F82C0F20083DDC7 /* QuickMemoWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9CEB689D2F82B4AC00D3AA36 /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -35,11 +56,32 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9C9AA4B42F82C0F10083DDC7 /* QuickMemoWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = QuickMemoWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		9C9AA4B62F82C0F10083DDC7 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		9C9AA4B82F82C0F10083DDC7 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		9CEB68282F82A0E400D3AA36 /* QuickMemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuickMemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CEB68A22F82B4F500D3AA36 /* QuickMemo Watch App Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "QuickMemo Watch App Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9C9AA4C92F82C0F20083DDC7 /* Exceptions for "QuickMemoWidget" folder in "QuickMemoWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9C9AA4B32F82C0F10083DDC7 /* QuickMemoWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		9C9AA4BA2F82C0F10083DDC7 /* QuickMemoWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9C9AA4C92F82C0F20083DDC7 /* Exceptions for "QuickMemoWidget" folder in "QuickMemoWidgetExtension" target */,
+			);
+			path = QuickMemoWidget;
+			sourceTree = "<group>";
+		};
 		9CEB682A2F82A0E400D3AA36 /* QuickMemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = QuickMemo;
@@ -53,6 +95,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		9C9AA4B12F82C0F10083DDC7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9C9AA4B92F82C0F10083DDC7 /* SwiftUI.framework in Frameworks */,
+				9C9AA4B72F82C0F10083DDC7 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9CEB68252F82A0E400D3AA36 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -70,11 +121,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9C9AA4B52F82C0F10083DDC7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9C9AA4B62F82C0F10083DDC7 /* WidgetKit.framework */,
+				9C9AA4B82F82C0F10083DDC7 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		9CEB681F2F82A0E400D3AA36 = {
 			isa = PBXGroup;
 			children = (
 				9CEB682A2F82A0E400D3AA36 /* QuickMemo */,
 				9CEB68A32F82B4F500D3AA36 /* QuickMemo Watch App Watch App */,
+				9C9AA4BA2F82C0F10083DDC7 /* QuickMemoWidget */,
+				9C9AA4B52F82C0F10083DDC7 /* Frameworks */,
 				9CEB68292F82A0E400D3AA36 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -84,6 +146,7 @@
 			children = (
 				9CEB68282F82A0E400D3AA36 /* QuickMemo.app */,
 				9CEB68A22F82B4F500D3AA36 /* QuickMemo Watch App Watch App.app */,
+				9C9AA4B42F82C0F10083DDC7 /* QuickMemoWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -91,6 +154,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		9C9AA4B32F82C0F10083DDC7 /* QuickMemoWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9C9AA4CA2F82C0F20083DDC7 /* Build configuration list for PBXNativeTarget "QuickMemoWidgetExtension" */;
+			buildPhases = (
+				9C9AA4B02F82C0F10083DDC7 /* Sources */,
+				9C9AA4B12F82C0F10083DDC7 /* Frameworks */,
+				9C9AA4B22F82C0F10083DDC7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				9C9AA4BA2F82C0F10083DDC7 /* QuickMemoWidget */,
+			);
+			name = QuickMemoWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = QuickMemoWidgetExtension;
+			productReference = 9C9AA4B42F82C0F10083DDC7 /* QuickMemoWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		9CEB68272F82A0E400D3AA36 /* QuickMemo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9CEB68332F82A0E500D3AA36 /* Build configuration list for PBXNativeTarget "QuickMemo" */;
@@ -122,10 +207,12 @@
 				9CEB689E2F82B4F500D3AA36 /* Sources */,
 				9CEB689F2F82B4F500D3AA36 /* Frameworks */,
 				9CEB68A02F82B4F500D3AA36 /* Resources */,
+				9C9AA4CD2F82C0F20083DDC7 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				9C9AA4C72F82C0F20083DDC7 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9CEB68A32F82B4F500D3AA36 /* QuickMemo Watch App Watch App */,
@@ -147,6 +234,9 @@
 				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 2630;
 				TargetAttributes = {
+					9C9AA4B32F82C0F10083DDC7 = {
+						CreatedOnToolsVersion = 26.3;
+					};
 					9CEB68272F82A0E400D3AA36 = {
 						CreatedOnToolsVersion = 26.3;
 					};
@@ -171,11 +261,19 @@
 			targets = (
 				9CEB68272F82A0E400D3AA36 /* QuickMemo */,
 				9CEB68A12F82B4F500D3AA36 /* QuickMemo Watch App Watch App */,
+				9C9AA4B32F82C0F10083DDC7 /* QuickMemoWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		9C9AA4B22F82C0F10083DDC7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9CEB68262F82A0E400D3AA36 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -193,6 +291,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		9C9AA4B02F82C0F10083DDC7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9CEB68242F82A0E400D3AA36 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -210,6 +315,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		9C9AA4C72F82C0F20083DDC7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9C9AA4B32F82C0F10083DDC7 /* QuickMemoWidgetExtension */;
+			targetProxy = 9C9AA4C62F82C0F20083DDC7 /* PBXContainerItemProxy */;
+		};
 		9CEB68AB2F82B4F600D3AA36 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 9CEB68A12F82B4F500D3AA36 /* QuickMemo Watch App Watch App */;
@@ -218,6 +328,72 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		9C9AA4CB2F82C0F20083DDC7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = N427S26D2P;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = QuickMemoWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = QuickMemoWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tettou771.com.QuickMemo.watchkitapp.QuickMemoWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		9C9AA4CC2F82C0F20083DDC7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = N427S26D2P;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = QuickMemoWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = QuickMemoWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tettou771.com.QuickMemo.watchkitapp.QuickMemoWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
 		9CEB68312F82A0E500D3AA36 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -476,6 +652,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		9C9AA4CA2F82C0F20083DDC7 /* Build configuration list for PBXNativeTarget "QuickMemoWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9C9AA4CB2F82C0F20083DDC7 /* Debug */,
+				9C9AA4CC2F82C0F20083DDC7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		9CEB68232F82A0E400D3AA36 /* Build configuration list for PBXProject "QuickMemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
