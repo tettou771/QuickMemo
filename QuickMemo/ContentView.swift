@@ -1,21 +1,36 @@
-//
-//  ContentView.swift
-//  QuickMemo
-//
-//  Created by 高田徹 on 2026/04/05.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @State private var showSettings = false
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            RecordingView()
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            showSettings = true
+                        } label: {
+                            Image(systemName: "gearshape")
+                        }
+                    }
+                }
+                .sheet(isPresented: $showSettings) {
+                    NavigationStack {
+                        SettingsView()
+                            .toolbar {
+                                ToolbarItem(placement: .topBarTrailing) {
+                                    Button("完了") { showSettings = false }
+                                }
+                            }
+                    }
+                }
+                .onAppear {
+                    if !WebDAVService.shared.isConfigured {
+                        showSettings = true
+                    }
+                }
         }
-        .padding()
     }
 }
 

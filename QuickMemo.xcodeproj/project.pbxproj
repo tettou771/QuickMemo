@@ -6,8 +6,37 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9CEB68AC2F82B4F600D3AA36 /* QuickMemo Watch App Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 9CEB68A22F82B4F500D3AA36 /* QuickMemo Watch App Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9CEB68AA2F82B4F600D3AA36 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9CEB68202F82A0E400D3AA36 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9CEB68A12F82B4F500D3AA36;
+			remoteInfo = "QuickMemo Watch App Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9CEB689D2F82B4AC00D3AA36 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				9CEB68AC2F82B4F600D3AA36 /* QuickMemo Watch App Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		9CEB68282F82A0E400D3AA36 /* QuickMemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuickMemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CEB68A22F82B4F500D3AA36 /* QuickMemo Watch App Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "QuickMemo Watch App Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +45,22 @@
 			path = QuickMemo;
 			sourceTree = "<group>";
 		};
+		9CEB68A32F82B4F500D3AA36 /* QuickMemo Watch App Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "QuickMemo Watch App Watch App";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		9CEB68252F82A0E400D3AA36 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CEB689F2F82B4F500D3AA36 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				9CEB682A2F82A0E400D3AA36 /* QuickMemo */,
+				9CEB68A32F82B4F500D3AA36 /* QuickMemo Watch App Watch App */,
 				9CEB68292F82A0E400D3AA36 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				9CEB68282F82A0E400D3AA36 /* QuickMemo.app */,
+				9CEB68A22F82B4F500D3AA36 /* QuickMemo Watch App Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -55,10 +98,12 @@
 				9CEB68242F82A0E400D3AA36 /* Sources */,
 				9CEB68252F82A0E400D3AA36 /* Frameworks */,
 				9CEB68262F82A0E400D3AA36 /* Resources */,
+				9CEB689D2F82B4AC00D3AA36 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				9CEB68AB2F82B4F600D3AA36 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9CEB682A2F82A0E400D3AA36 /* QuickMemo */,
@@ -68,6 +113,28 @@
 			);
 			productName = QuickMemo;
 			productReference = 9CEB68282F82A0E400D3AA36 /* QuickMemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9CEB68A12F82B4F500D3AA36 /* QuickMemo Watch App Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9CEB68AD2F82B4F600D3AA36 /* Build configuration list for PBXNativeTarget "QuickMemo Watch App Watch App" */;
+			buildPhases = (
+				9CEB689E2F82B4F500D3AA36 /* Sources */,
+				9CEB689F2F82B4F500D3AA36 /* Frameworks */,
+				9CEB68A02F82B4F500D3AA36 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				9CEB68A32F82B4F500D3AA36 /* QuickMemo Watch App Watch App */,
+			);
+			name = "QuickMemo Watch App Watch App";
+			packageProductDependencies = (
+			);
+			productName = "QuickMemo Watch App Watch App";
+			productReference = 9CEB68A22F82B4F500D3AA36 /* QuickMemo Watch App Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -81,6 +148,9 @@
 				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					9CEB68272F82A0E400D3AA36 = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					9CEB68A12F82B4F500D3AA36 = {
 						CreatedOnToolsVersion = 26.3;
 					};
 				};
@@ -100,12 +170,20 @@
 			projectRoot = "";
 			targets = (
 				9CEB68272F82A0E400D3AA36 /* QuickMemo */,
+				9CEB68A12F82B4F500D3AA36 /* QuickMemo Watch App Watch App */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		9CEB68262F82A0E400D3AA36 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CEB68A02F82B4F500D3AA36 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +200,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9CEB689E2F82B4F500D3AA36 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9CEB68AB2F82B4F600D3AA36 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9CEB68A12F82B4F500D3AA36 /* QuickMemo Watch App Watch App */;
+			targetProxy = 9CEB68AA2F82B4F600D3AA36 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		9CEB68312F82A0E500D3AA36 /* Debug */ = {
@@ -256,6 +349,8 @@
 				DEVELOPMENT_TEAM = N427S26D2P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "音声メモを録音するために使用します";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "音声をテキストに変換してメモを作成するために使用します";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -288,6 +383,8 @@
 				DEVELOPMENT_TEAM = N427S26D2P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "音声メモを録音するために使用します";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "音声をテキストに変換してメモを作成するために使用します";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -310,6 +407,72 @@
 			};
 			name = Release;
 		};
+		9CEB68AE2F82B4F600D3AA36 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = N427S26D2P;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "QuickMemo Watch App";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = tettou771.com.QuickMemo;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tettou771.com.QuickMemo.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		9CEB68AF2F82B4F600D3AA36 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = N427S26D2P;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "QuickMemo Watch App";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = tettou771.com.QuickMemo;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tettou771.com.QuickMemo.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -327,6 +490,15 @@
 			buildConfigurations = (
 				9CEB68342F82A0E500D3AA36 /* Debug */,
 				9CEB68352F82A0E500D3AA36 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9CEB68AD2F82B4F600D3AA36 /* Build configuration list for PBXNativeTarget "QuickMemo Watch App Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CEB68AE2F82B4F600D3AA36 /* Debug */,
+				9CEB68AF2F82B4F600D3AA36 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
