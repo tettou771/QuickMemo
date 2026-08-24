@@ -1,4 +1,5 @@
 import SwiftUI
+import WatchConnectivity
 
 struct SettingsView: View {
     @State private var serverURL: String
@@ -68,7 +69,20 @@ struct SettingsView: View {
             password: password,
             savePath: savePath
         )
-        testResult = "保存しました"
+
+        // Transfer config to Watch
+        if WCSession.default.isPaired {
+            let config: [String: Any] = [
+                "type": "webdav_config",
+                "server": serverURL,
+                "user": username,
+                "pass": password,
+                "path": savePath,
+            ]
+            WCSession.default.transferUserInfo(config)
+        }
+
+        testResult = "保存しました（Watchにも転送中）"
     }
 
     private func testConnection() async {

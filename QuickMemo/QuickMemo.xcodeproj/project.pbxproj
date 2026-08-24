@@ -596,6 +596,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "QuickMemo Watch App";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "メモに位置情報を記録します";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = tettou771.com.QuickMemo;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -629,6 +630,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "QuickMemo Watch App";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "メモに位置情報を記録します";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = tettou771.com.QuickMemo;
 				LD_RUNPATH_SEARCH_PATHS = (

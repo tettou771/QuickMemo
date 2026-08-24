@@ -93,14 +93,16 @@ class WebDAVService {
         try await ensureDateDirectory(config: cfg, date: now)
 
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyyMMdd_HHmm"
+        formatter.dateFormat = "yyyyMMdd_HHmmss"
         let filename = formatter.string(from: now) + ".md"
 
         guard let url = cfg.uploadURL(filename: filename, date: now) else {
             throw WebDAVError.invalidURL
         }
 
-        let content = MemoBuilder.build(text: text, category: category, source: .iphone, location: location)
+        let content = MemoBuilder.build(
+            text: text, category: category, source: .iphone, createdAt: now, location: location
+        )
         let data = content.data(using: .utf8)!
 
         var request = URLRequest(url: url)

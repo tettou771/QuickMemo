@@ -13,3 +13,6 @@ Packages/
 
 # Secrets (just in case)
 *.env
+
+# Claude Code local settings
+.claude/settings.local.json

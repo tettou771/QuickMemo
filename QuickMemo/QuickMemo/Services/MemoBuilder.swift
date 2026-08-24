@@ -7,11 +7,18 @@ struct MemoBuilder {
         case appleWatch = "apple-watch"
     }
 
-    static func build(text: String, category: MemoCategory, source: Source, location: CLLocation? = nil) -> String {
-        let now = Date()
+    /// `createdAt` is passed in rather than sampled here so that `created:` and
+    /// the filename, which is derived from the same instant, cannot disagree.
+    static func build(
+        text: String,
+        category: MemoCategory,
+        source: Source,
+        createdAt: Date,
+        location: CLLocation? = nil
+    ) -> String {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime]
-        let isoDate = formatter.string(from: now)
+        let isoDate = formatter.string(from: createdAt)
 
         var frontmatter = """
         ---
