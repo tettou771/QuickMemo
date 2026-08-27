@@ -4,11 +4,15 @@ import UIKit
 struct RecordingView: View {
     @StateObject private var recognizer = SpeechRecognizer()
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
 
     @State private var text = ""
     @State private var saved = false
     @State private var saveError: String?
     @State private var saving = false
+    @State private var pendingCount = 0
+    @State private var statusMessage: String?
+    @State private var saveAlertTitle = "保存しました"
     @FocusState private var textFocused: Bool
 
     var body: some View {
@@ -61,6 +65,26 @@ struct RecordingView: View {
             .padding(.horizontal)
             .padding(.vertical, 8)
 
+            // Pending upload queue
+            if pendingCount > 0 {
+                Button {
+                    Task { await flushPending(userInitiated: true) }
+                } label: {
+                    Label("未送信 \(pendingCount)件", systemImage: "arrow.up.circle")
+                        .font(.caption)
+                }
+                .disabled(saving)
+                .padding(.bottom, 4)
+            }
+
+            if let statusMessage {
+                Text(statusMessage)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal)
+                    .padding(.bottom, 4)
+            }
+
             // Error display
             if let error = recognizer.errorMessage ?? saveError {
                 Text(error)
@@ -88,6 +112,8 @@ struct RecordingView: View {
         .navigationTitle("QuickMemo")
         .navigationBarTitleDisplayMode(.inline)
         .task {
+            // Retry anything left over from a previous session
+            await flushPending()
             // Start location fetch early
             LocationManager.shared.startFetching()
             // Auto-start voice recording on launch
@@ -96,12 +122,17 @@ struct RecordingView: View {
                 recognizer.startRecording()
             }
         }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                Task { await flushPending() }
+            }
+        }
         .onChange(of: recognizer.transcript) { _, newValue in
             if !newValue.isEmpty {
                 text = newValue
             }
         }
-        .alert("保存しました", isPresented: $saved) {
+        .alert(saveAlertTitle, isPresented: $saved) {
             Button("OK") {
                 text = ""
                 recognizer.reset()
@@ -129,17 +160,52 @@ struct RecordingView: View {
         saving = true
         defer { saving = false }
 
+        // Capture when and where the memo was taken, before any network work
+        let createdAt = Date()
         // Wait for location (started when view appeared, up to 10s)
         let location = await LocationManager.shared.getLocation()
+        let memo = PendingMemo(text: text, category: category, createdAt: createdAt, location: location)
 
         do {
-            try await WebDAVService.shared.saveMemo(text: text, category: category, location: location)
+            try await WebDAVService.shared.upload(memo)
             UINotificationFeedbackGenerator().notificationOccurred(.success)
+            saveAlertTitle = "保存しました"
             saved = true
             saveError = nil
+            statusMessage = nil
+            // Network is up — drain anything that failed earlier
+            await flushPending()
         } catch {
+            // Queue it with its original timestamp and location so it is not lost
+            await PendingMemoStore.shared.enqueue(memo)
+            pendingCount = await PendingMemoStore.shared.count
             UINotificationFeedbackGenerator().notificationOccurred(.error)
-            saveError = error.localizedDescription
+            saveError = "送信失敗: \(error.localizedDescription)"
+            // Clear the field like a successful save would, so the user does not
+            // re-send the same memo by hand and create a duplicate
+            saveAlertTitle = "後で送信します"
+            saved = true
+        }
+    }
+
+    private func flushPending(userInitiated: Bool = false) async {
+        pendingCount = await PendingMemoStore.shared.count
+        guard pendingCount > 0 else { return }
+
+        if userInitiated { saving = true }
+        let sent = await PendingMemoStore.shared.flush()
+        if userInitiated { saving = false }
+
+        pendingCount = await PendingMemoStore.shared.count
+
+        if sent > 0 {
+            statusMessage = "未送信\(sent)件を送信しました"
+            saveError = nil
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        } else if userInitiated {
+            statusMessage = nil
+            saveError = "まだ送信できません"
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
         }
     }
 }

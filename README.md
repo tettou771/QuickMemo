@@ -58,6 +58,7 @@ QuickMemo/
 │   │   └── AppIntents/                 # Siri / ショートカット
 │   ├── Services/
 │   │   ├── WebDAVService.swift
+│   │   ├── PendingMemoStore.swift      # 送信失敗メモの永続キュー
 │   │   ├── MemoBuilder.swift
 │   │   ├── LocationManager.swift
 │   │   └── WatchSessionManager.swift   # 設定を watch へ送信
@@ -71,7 +72,7 @@ QuickMemo/
 └── QuickMemoWidget/                    # コンプリケーション
 ```
 
-iOS と watchOS でコードは共有していない。`MemoCategory` / `MemoBuilder` / `WebDAVService` は両方に同名・別実装で存在するので、**片方を直したらもう片方も確認すること**。
+iOS と watchOS でコードは共有していない。`MemoCategory` / `MemoBuilder` / `WebDAVService` / `PendingMemoStore` は両方に同名・別実装で存在するので、**片方を直したらもう片方も確認すること**。
 
 ---
 
@@ -122,16 +123,16 @@ location: [35.681236, 139.767125]
 
 ## 主要な設計
 
-### 送信失敗時のリトライ（watch のみ）
+### 送信失敗時のリトライ
 
-watch は送信に失敗したメモを `PendingMemoStore`（UserDefaults に JSON で永続化）へ積む。積むのは本文・カテゴリ・**メモした時刻**・**その時のジオタグ**のセット。
+iPhone と watch のどちらも、送信に失敗したメモを `PendingMemoStore`（UserDefaults に JSON で永続化）へ積む。積むのは本文・カテゴリ・**メモした時刻**・**その時のジオタグ**のセット。
 
-再送のタイミングは 4 つ:
+再送のタイミング:
 
 - アプリ起動時
 - フォアグラウンド復帰時
 - 別のメモの送信に成功した直後
-- iPhone から WebDAV 設定が届いた時
+- （watch のみ）iPhone から WebDAV 設定が届いた時
 
 未送信が残っている間は画面に「未送信 N 件」ボタンが出て手動でも流せる。
 
@@ -224,7 +225,6 @@ watch は腕から外すと即ロックするので、着けたまま作業す�
 ## 既知の制限
 
 - **WebDAV のパスワードが UserDefaults に平文で入っている。** Keychain ではない。さらに WatchConnectivity の userInfo でそのまま watch に送っている。Nextcloud のアプリパスワード（＝失効させられる使い捨て）を使う前提の割り切り。
-- **iPhone 側にはオフラインキューが無い。** 送信に失敗するとエラー表示のみで、メモは失われる。リトライ機構は watch だけに入っている。
 - **watch の音声入力を日本語に固定できない。** watchOS には入力言語やディクテーション直行を指定する公開 API が存在しない（`Speech.framework` も watchOS SDK に無いため、iPhone 側の `SFSpeechRecognizer(locale:)` 方式は移植できない）。watch 本体のキーボード言語設定から英語を外して対処する。
 - 同一秒に 2 件保存すると同名になり上書きされる。UI 上ほぼ起こらないため許容している。
 
@@ -233,5 +233,4 @@ watch は腕から外すと即ロックするので、着けたまま作業す�
 ## 拡張候補（未着手）
 
 - 音声ファイル自体の添付（AVAudioRecorder → 同フォルダに m4a）
-- iPhone 側へのオフラインキュー導入
 - パスワードの Keychain 移行

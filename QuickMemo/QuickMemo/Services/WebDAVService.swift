@@ -83,25 +83,32 @@ class WebDAVService {
 
     // MARK: - Upload
 
-    func saveMemo(text: String, category: MemoCategory, location: CLLocation? = nil) async throws {
+    /// Upload a memo. `createdAt` is the moment the memo was composed, not the
+    /// moment of upload, so a retried memo keeps its original timestamp and path.
+    /// The filename is derived from it too, which makes a retry idempotent.
+    func upload(_ memo: PendingMemo) async throws {
         let cfg = config
         guard cfg.isConfigured else { throw WebDAVError.notConfigured }
 
-        let now = Date()
+        let createdAt = memo.createdAt
 
         // Ensure date directory exists (e.g. /QuickMemo/2026/04/)
-        try await ensureDateDirectory(config: cfg, date: now)
+        try await ensureDateDirectory(config: cfg, date: createdAt)
 
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyyMMdd_HHmmss"
-        let filename = formatter.string(from: now) + ".md"
+        let filename = formatter.string(from: createdAt) + ".md"
 
-        guard let url = cfg.uploadURL(filename: filename, date: now) else {
+        guard let url = cfg.uploadURL(filename: filename, date: createdAt) else {
             throw WebDAVError.invalidURL
         }
 
         let content = MemoBuilder.build(
-            text: text, category: category, source: .iphone, createdAt: now, location: location
+            text: memo.text,
+            category: memo.memoCategory,
+            source: .iphone,
+            createdAt: createdAt,
+            location: memo.location
         )
         let data = content.data(using: .utf8)!
 
