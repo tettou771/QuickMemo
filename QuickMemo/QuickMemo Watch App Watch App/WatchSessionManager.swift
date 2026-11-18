@@ -19,7 +19,10 @@ class WatchSessionManager: NSObject, WCSessionDelegate {
             WatchWebDAVService.shared.applyConfig(userInfo)
             print("[Watch] WebDAV config received from iPhone")
             // Config may have been the reason uploads were failing
-            Task { await PendingMemoStore.shared.flush() }
+            Task {
+                await PendingMemoStore.shared.clearBlock()
+                await PendingMemoStore.shared.flush()
+            }
         }
     }
 }

@@ -46,6 +46,20 @@ enum WebDAVError: LocalizedError {
     case invalidURL
     case uploadFailed(Int)
     case networkError(Error)
+    /// 401: the server rejected the stored credentials
+    case unauthorized
+    /// 429: Nextcloud's brute-force protection is throttling this IP
+    case throttled
+
+    /// Map a non-success HTTP status to an error, singling out the two that mean
+    /// "stop retrying": repeating a rejected login only extends the throttle.
+    static func from(status: Int) -> WebDAVError {
+        switch status {
+        case 401: return .unauthorized
+        case 429: return .throttled
+        default: return .uploadFailed(status)
+        }
+    }
 
     var errorDescription: String? {
         switch self {
@@ -53,6 +67,8 @@ enum WebDAVError: LocalizedError {
         case .invalidURL: return "URLが不正です"
         case .uploadFailed(let code): return "アップロード失敗 (HTTP \(code))"
         case .networkError(let e): return "ネットワークエラー: \(e.localizedDescription)"
+        case .unauthorized: return "認証エラー (HTTP 401)"
+        case .throttled: return "サーバが一時的に受け付けていません (HTTP 429)"
         }
     }
 }
@@ -123,7 +139,7 @@ class WebDAVService {
             let status = (response as? HTTPURLResponse)?.statusCode ?? 0
             // 201 Created or 204 No Content = success
             guard (200...299).contains(status) else {
-                throw WebDAVError.uploadFailed(status)
+                throw WebDAVError.from(status: status)
             }
         } catch let error as WebDAVError {
             throw error
@@ -151,8 +167,20 @@ class WebDAVService {
             request.httpMethod = "MKCOL"
             request.setValue(authHeader(cfg), forHTTPHeaderField: "Authorization")
 
-            // 201 = created, 405 = already exists — both OK
-            let (_, _) = try await URLSession.shared.data(for: request)
+            let status: Int
+            do {
+                let (_, response) = try await URLSession.shared.data(for: request)
+                status = (response as? HTTPURLResponse)?.statusCode ?? 0
+            } catch {
+                throw WebDAVError.networkError(error)
+            }
+
+            // 201 = created, 405 = already exists — both fine. Stop at the first
+            // 401/429 instead of sending the remaining levels and the PUT: each
+            // request with bad credentials counts as another failed login.
+            if status == 401 || status == 429 {
+                throw WebDAVError.from(status: status)
+            }
         }
     }
 

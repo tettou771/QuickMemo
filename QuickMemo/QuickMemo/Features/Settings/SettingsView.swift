@@ -83,6 +83,14 @@ struct SettingsView: View {
         }
 
         testResult = "保存しました（Watchにも転送中）"
+
+        // New credentials: lift any auth block and let the recorder retry the queue
+        Task {
+            await PendingMemoStore.shared.clearBlock()
+            await MainActor.run {
+                NotificationCenter.default.post(name: .quickMemoSettingsSaved, object: nil)
+            }
+        }
     }
 
     private func testConnection() async {
@@ -118,4 +126,9 @@ struct SettingsView: View {
             testResult = "接続失敗: \(error.localizedDescription)"
         }
     }
+}
+
+extension Notification.Name {
+    /// Posted after the WebDAV settings are saved, so pending uploads retry with them
+    static let quickMemoSettingsSaved = Notification.Name("quickMemoSettingsSaved")
 }

@@ -19,6 +19,24 @@ private extension DateFormatter {
     }()
 }
 
+enum WatchWebDAVError: Error {
+    /// 401: the server rejected the stored credentials
+    case unauthorized
+    /// 429: Nextcloud's brute-force protection is throttling this IP
+    case throttled
+    case badStatus(Int)
+
+    /// Single out the two statuses that mean "stop retrying": repeating a
+    /// rejected login only extends the throttle.
+    static func from(status: Int) -> WatchWebDAVError {
+        switch status {
+        case 401: return .unauthorized
+        case 429: return .throttled
+        default: return .badStatus(status)
+        }
+    }
+}
+
 class WatchWebDAVService {
     static let shared = WatchWebDAVService()
 
@@ -82,7 +100,7 @@ class WatchWebDAVService {
         let (_, response) = try await URLSession.shared.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard (200...299).contains(status) else {
-            throw URLError(.badServerResponse)
+            throw WatchWebDAVError.from(status: status)
         }
     }
 
@@ -102,7 +120,15 @@ class WatchWebDAVService {
             var request = URLRequest(url: url)
             request.httpMethod = "MKCOL"
             request.setValue(authHeader(), forHTTPHeaderField: "Authorization")
-            let (_, _) = try await URLSession.shared.data(for: request)
+            let (_, response) = try await URLSession.shared.data(for: request)
+            let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+
+            // 201 = created, 405 = already exists — both fine. Stop at the first
+            // 401/429 instead of sending the remaining levels and the PUT: each
+            // request with bad credentials counts as another failed login.
+            if status == 401 || status == 429 {
+                throw WatchWebDAVError.from(status: status)
+            }
         }
     }
 

@@ -90,6 +90,18 @@ struct ContentView: View {
         let location = await WatchLocationManager.shared.getLocation()
         let memo = PendingMemo(text: text, category: category, createdAt: createdAt, location: location)
 
+        // The server has already refused us: queue it without touching the
+        // network, since another attempt would only extend the throttle
+        if let block = await PendingMemoStore.shared.currentBlock() {
+            await PendingMemoStore.shared.enqueue(memo)
+            text = ""
+            pendingCount = await PendingMemoStore.shared.count
+            statusMessage = blockMessage(block)
+            statusIsError = true
+            WKInterfaceDevice.current().play(.failure)
+            return
+        }
+
         do {
             try await WatchWebDAVService.shared.upload(memo)
             text = ""
@@ -105,9 +117,10 @@ struct ContentView: View {
             // Queue it with its original timestamp and location, and clear the
             // field so the user does not re-send a duplicate by hand
             await PendingMemoStore.shared.enqueue(memo)
+            let block = await PendingMemoStore.shared.recordFailure(error)
             text = ""
             pendingCount = await PendingMemoStore.shared.count
-            statusMessage = "送信失敗 - 後で送信します"
+            statusMessage = block.map(blockMessage) ?? "送信失敗 - 後で送信します"
             statusIsError = true
             WKInterfaceDevice.current().play(.failure)
         }
@@ -118,7 +131,7 @@ struct ContentView: View {
         guard pendingCount > 0 else { return }
 
         if userInitiated { sending = true }
-        let sent = await PendingMemoStore.shared.flush()
+        let sent = await PendingMemoStore.shared.flush(userInitiated: userInitiated)
         if userInitiated { sending = false }
 
         pendingCount = await PendingMemoStore.shared.count
@@ -131,6 +144,21 @@ struct ContentView: View {
             statusMessage = "まだ送信できません"
             statusIsError = true
             WKInterfaceDevice.current().play(.failure)
+        }
+
+        // While memos are stuck behind a block, keep saying why
+        if pendingCount > 0, let block = await PendingMemoStore.shared.currentBlock() {
+            statusMessage = blockMessage(block)
+            statusIsError = true
+        }
+    }
+
+    private func blockMessage(_ block: UploadBlock) -> String {
+        switch block {
+        case .unauthorized:
+            return "認証エラー\niPhoneの設定でパスワードを確認してください"
+        case .throttled:
+            return "サーバ制限中 (429)\n30分ほど待って再送します"
         }
     }
 }

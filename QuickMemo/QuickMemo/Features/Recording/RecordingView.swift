@@ -122,6 +122,10 @@ struct RecordingView: View {
                 recognizer.startRecording()
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .quickMemoSettingsSaved)) { _ in
+            saveError = nil
+            Task { await flushPending() }
+        }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
                 Task { await flushPending() }
@@ -166,6 +170,18 @@ struct RecordingView: View {
         let location = await LocationManager.shared.getLocation()
         let memo = PendingMemo(text: text, category: category, createdAt: createdAt, location: location)
 
+        // The server has already refused us: queue it without touching the
+        // network, since another attempt would only extend the throttle
+        if let block = await PendingMemoStore.shared.currentBlock() {
+            await PendingMemoStore.shared.enqueue(memo)
+            pendingCount = await PendingMemoStore.shared.count
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            saveError = blockMessage(block)
+            saveAlertTitle = "後で送信します"
+            saved = true
+            return
+        }
+
         do {
             try await WebDAVService.shared.upload(memo)
             UINotificationFeedbackGenerator().notificationOccurred(.success)
@@ -178,9 +194,10 @@ struct RecordingView: View {
         } catch {
             // Queue it with its original timestamp and location so it is not lost
             await PendingMemoStore.shared.enqueue(memo)
+            let block = await PendingMemoStore.shared.recordFailure(error)
             pendingCount = await PendingMemoStore.shared.count
             UINotificationFeedbackGenerator().notificationOccurred(.error)
-            saveError = "送信失敗: \(error.localizedDescription)"
+            saveError = block.map(blockMessage) ?? "送信失敗: \(error.localizedDescription)"
             // Clear the field like a successful save would, so the user does not
             // re-send the same memo by hand and create a duplicate
             saveAlertTitle = "後で送信します"
@@ -193,7 +210,7 @@ struct RecordingView: View {
         guard pendingCount > 0 else { return }
 
         if userInitiated { saving = true }
-        let sent = await PendingMemoStore.shared.flush()
+        let sent = await PendingMemoStore.shared.flush(userInitiated: userInitiated)
         if userInitiated { saving = false }
 
         pendingCount = await PendingMemoStore.shared.count
@@ -206,6 +223,20 @@ struct RecordingView: View {
             statusMessage = nil
             saveError = "まだ送信できません"
             UINotificationFeedbackGenerator().notificationOccurred(.error)
+        }
+
+        // While memos are stuck behind a block, keep saying why
+        if pendingCount > 0, let block = await PendingMemoStore.shared.currentBlock() {
+            saveError = blockMessage(block)
+        }
+    }
+
+    private func blockMessage(_ block: UploadBlock) -> String {
+        switch block {
+        case .unauthorized:
+            return "認証エラー: 設定でアプリパスワードを確認してください。直すまで自動では再送しません"
+        case .throttled:
+            return "サーバが一時的に受け付けていません (HTTP 429)。30分ほど待ってから再送します"
         }
     }
 }
