@@ -1,49 +1,60 @@
 import CoreLocation
 
+// Mirrors WatchLocationManager in the watch target, so a memo's coordinate is
+// taken the same way on both devices: tracked continuously while the app is
+// on screen at best accuracy, and stamped from the latest fix at save time.
+
 class LocationManager: NSObject, CLLocationManagerDelegate {
     static let shared = LocationManager()
 
     private let manager = CLLocationManager()
     private var pendingContinuations: [CheckedContinuation<CLLocation?, Never>] = []
     private var lastLocation: CLLocation?
-    private var fetching = false
+    private var tracking = false
 
     override init() {
         super.init()
         manager.delegate = self
-        manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        // Ask for the best fix the hardware can give. Continuous tracking absorbs
+        // the extra time this costs, so it does not slow down saving a memo.
+        manager.desiredAccuracy = kCLLocationAccuracyBest
     }
 
-    /// Start location fetch early (call when recording starts)
-    func startFetching() {
+    /// Keep the GPS engaged while the app is on screen. Continuous updates let the
+    /// fix converge, so a memo saved later reuses an already-good location instead
+    /// of paying for a cold start at save time.
+    func startTracking() {
         let status = manager.authorizationStatus
         if status == .notDetermined {
             manager.requestWhenInUseAuthorization()
             return
         }
         guard status == .authorizedWhenInUse || status == .authorizedAlways else { return }
-        guard !fetching else { return }
-        fetching = true
-        manager.requestLocation()
+        guard !tracking else { return }
+        tracking = true
+        manager.startUpdatingLocation()
     }
 
-    /// Get location, waiting up to `timeout` seconds if still fetching
-    func getLocation(timeout: TimeInterval = 10.0) async -> CLLocation? {
-        // If we already have a fresh location (< 60s old), return immediately
-        if let loc = lastLocation, abs(loc.timestamp.timeIntervalSinceNow) < 60 {
-            return loc
-        }
+    /// Stop once the app leaves the screen. Without this iOS would keep the GPS
+    /// running for as long as the app stays alive in the background.
+    func stopTracking() {
+        guard tracking else { return }
+        tracking = false
+        manager.stopUpdatingLocation()
+    }
 
-        // Start fetching if not already
-        startFetching()
+    /// Location to stamp on a memo. Normally returns instantly from the tracked
+    /// fix; it only waits when the app just launched and nothing has arrived yet.
+    func getLocation(timeout: TimeInterval = 3.0, maxAge: TimeInterval = 60) async -> CLLocation? {
+        if let loc = freshLocation(maxAge: maxAge) { return loc }
 
-        // Wait for result with timeout
+        startTracking()
+
         return await withTaskGroup(of: CLLocation?.self) { group in
             group.addTask {
                 await withCheckedContinuation { continuation in
                     Task { @MainActor in
-                        // If location arrived while we were setting up
-                        if let loc = self.lastLocation, abs(loc.timestamp.timeIntervalSinceNow) < 60 {
+                        if let loc = self.freshLocation(maxAge: maxAge) {
                             continuation.resume(returning: loc)
                         } else {
                             self.pendingContinuations.append(continuation)
@@ -60,7 +71,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
             let result = await group.next() ?? nil
             group.cancelAll()
 
-            // Resume any remaining continuations with nil
+            // Timed out: release anyone still waiting with whatever we have
             Task { @MainActor in
                 for cont in self.pendingContinuations {
                     cont.resume(returning: self.lastLocation)
@@ -72,13 +83,18 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
 
+    private func freshLocation(maxAge: TimeInterval) -> CLLocation? {
+        guard let loc = lastLocation, abs(loc.timestamp.timeIntervalSinceNow) < maxAge else { return nil }
+        return loc
+    }
+
     // MARK: - CLLocationManagerDelegate
 
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location = locations.last
+        // A negative horizontalAccuracy marks an invalid fix
+        guard let location = locations.last, location.horizontalAccuracy >= 0 else { return }
         Task { @MainActor in
             lastLocation = location
-            fetching = false
             for cont in pendingContinuations {
                 cont.resume(returning: location)
             }
@@ -88,9 +104,8 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
 
     nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         Task { @MainActor in
-            fetching = false
             for cont in pendingContinuations {
-                cont.resume(returning: nil)
+                cont.resume(returning: lastLocation)
             }
             pendingContinuations.removeAll()
         }
@@ -99,7 +114,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let status = manager.authorizationStatus
         if status == .authorizedWhenInUse || status == .authorizedAlways {
-            manager.requestLocation()
+            Task { @MainActor in startTracking() }
         }
     }
 }

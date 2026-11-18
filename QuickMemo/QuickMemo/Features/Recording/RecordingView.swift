@@ -114,8 +114,6 @@ struct RecordingView: View {
         .task {
             // Retry anything left over from a previous session
             await flushPending()
-            // Start location fetch early
-            LocationManager.shared.startFetching()
             // Auto-start voice recording on launch
             let granted = await recognizer.requestPermissions()
             if granted {
@@ -126,9 +124,13 @@ struct RecordingView: View {
             saveError = nil
             Task { await flushPending() }
         }
-        .onChange(of: scenePhase) { _, phase in
+        .onChange(of: scenePhase, initial: true) { _, phase in
             if phase == .active {
+                // Keep the GPS warm for as long as the app is on screen
+                LocationManager.shared.startTracking()
                 Task { await flushPending() }
+            } else {
+                LocationManager.shared.stopTracking()
             }
         }
         .onChange(of: recognizer.transcript) { _, newValue in
@@ -166,7 +168,7 @@ struct RecordingView: View {
 
         // Capture when and where the memo was taken, before any network work
         let createdAt = Date()
-        // Wait for location (started when view appeared, up to 10s)
+        // Normally the tracked fix is ready; waits briefly only right after launch
         let location = await LocationManager.shared.getLocation()
         let memo = PendingMemo(text: text, category: category, createdAt: createdAt, location: location)
 
